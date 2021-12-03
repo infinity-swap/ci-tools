@@ -1,0 +1,18 @@
+FROM rust:latest
+
+# Install dfx
+RUN echo yes | sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)" \
+    && export PATH="/home/runner/bin:$PATH"
+
+RUN rustup component add clippy-preview && rustup target add wasm32-unknown-unknown
+
+# Install ic-cdk-optimizer
+RUN apt-get update && apt-get install -y cmake \
+    && cargo install ic-cdk-optimizer
+
+COPY canisters /usr/src/canisters
+COPY identity/.config/dfx/identity /usr/src/identity
+
+RUN chmod -R ugo+r /usr/src/canisters && chmod -R ugo+r /usr/src/identity && chmod -R ugo+rw /usr/local/cargo/registry/cache /usr/local/cargo/registry/src
+
+WORKDIR /usr/src

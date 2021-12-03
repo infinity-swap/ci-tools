@@ -1,0 +1,8 @@
+FROM alpine:3.14
+
+COPY canisters /usr/src/canisters
+COPY identity/.config/dfx/identity /usr/src/identity
+
+RUN chmod -R ugo+r /usr/src/canisters && chmod -R ugo+r /usr/src/identity
+
+WORKDIR /usr/src

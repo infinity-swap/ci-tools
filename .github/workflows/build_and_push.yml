@@ -1,0 +1,33 @@
+name: Build and push containers
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        name: Check out code
+
+      - uses: mr-smithers-excellent/docker-build-push@v5
+        name: Build & push CI image
+        with:
+          image: us-central1-docker.pkg.dev/dfx-server/dfx-containers/ci
+          tags: latest
+          registry: us-central1-docker.pkg.dev
+          dockerfile: Dockerfile.ci
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - uses: mr-smithers-excellent/docker-build-push@v5
+        name: Build & push slim image
+        with:
+          image: us-central1-docker.pkg.dev/dfx-server/dfx-containers/slim
+          tags: latest
+          registry: us-central1-docker.pkg.dev
+          dockerfile: Dockerfile.slim
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}

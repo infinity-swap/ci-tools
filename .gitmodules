@@ -1,0 +1,3 @@
+[submodule "identity"]
+	path = identity
+	url = git@github.com:infinity-swap/identity.git

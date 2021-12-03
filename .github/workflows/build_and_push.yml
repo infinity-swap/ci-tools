@@ -18,8 +18,9 @@ jobs:
       - uses: mr-smithers-excellent/docker-build-push@v5
         name: Build & push CI image
         with:
-          image: us-central1-docker.pkg.dev/dfx-server/dfx-containers/ci
+          image: dfx-server/dfx-containers/ci
           tags: latest
+          registry: us-central1-docker.pkg.dev
           dockerfile: Dockerfile.ci
           username: _json_key
           password: ${{ secrets.GCP_DOCKER_KEY }}
@@ -27,8 +28,9 @@ jobs:
       - uses: mr-smithers-excellent/docker-build-push@v5
         name: Build & push slim image
         with:
-          image: us-central1-docker.pkg.dev/dfx-server/dfx-containers/slim
+          image: dfx-server/dfx-containers/slim
           tags: latest
+          registry: us-central1-docker.pkg.dev
           dockerfile: Dockerfile.slim
           username: _json_key
           password: ${{ secrets.GCP_DOCKER_KEY }}

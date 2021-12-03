@@ -4,11 +4,13 @@ FROM rust:latest
 RUN echo yes | sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)" \
     && export PATH="/home/runner/bin:$PATH"
 
-RUN rustup component add clippy-preview && rustup target add wasm32-unknown-unknown
+RUN rustup component add clippy-preview \
+    && rustup component add rustfmt \
+    && rustup target add wasm32-unknown-unknown
 
-# Install ic-cdk-optimizer and fmt
+# Install ic-cdk-optimizer
 RUN apt-get update && apt-get install -y cmake \
-    && cargo install rustfmt ic-cdk-optimizer
+    && cargo install ic-cdk-optimizer
 
 COPY canisters /usr/src/canisters
 COPY identity/.config/dfx/identity /usr/src/identity

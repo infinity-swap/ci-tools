@@ -11,6 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         name: Check out code
+        with:
+          submodules: recursive
+          token: ${{ secrets.PAT_TOKEN }}
 
       - uses: mr-smithers-excellent/docker-build-push@v5
         name: Build & push CI image
@@ -19,8 +22,8 @@ jobs:
           tags: latest
           registry: us-central1-docker.pkg.dev
           dockerfile: Dockerfile.ci
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: _json_key
+          password: ${{ secrets.GCP_DOCKER_KEY }}
 
       - uses: mr-smithers-excellent/docker-build-push@v5
         name: Build & push slim image
@@ -29,5 +32,5 @@ jobs:
           tags: latest
           registry: us-central1-docker.pkg.dev
           dockerfile: Dockerfile.slim
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: _json_key
+          password: ${{ secrets.GCP_DOCKER_KEY }}

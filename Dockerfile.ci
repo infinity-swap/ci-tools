@@ -6,9 +6,9 @@ RUN echo yes | sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)" \
 
 RUN rustup component add clippy-preview && rustup target add wasm32-unknown-unknown
 
-# Install ic-cdk-optimizer
+# Install ic-cdk-optimizer and fmt
 RUN apt-get update && apt-get install -y cmake \
-    && cargo install ic-cdk-optimizer
+    && cargo install rustfmt ic-cdk-optimizer
 
 COPY canisters /usr/src/canisters
 COPY identity/.config/dfx/identity /usr/src/identity

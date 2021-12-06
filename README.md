@@ -29,7 +29,7 @@ sudo apt-get update && sudo apt-get install google-cloud-sdk
 
 2. [Login into GC](https://cloud.google.com/container-registry/docs/advanced-authentication#gcloud-helper):
 ```shell
-gloud auth login
+gcloud auth login
 ```
 
 # Using ci image

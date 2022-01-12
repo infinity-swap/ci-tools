@@ -1,0 +1,13 @@
+- hosts: all
+  become: yes
+  become_user: root
+  gather_facts: no
+  tasks:
+    - name: stop dfx server
+      command:
+        cmd: "bash stop-services.sh"
+        chdir: "{{ directory }}"
+    - name: start dfx server
+      command:
+        cmd: "bash start-services.sh"
+        chdir: "{{ directory }}"

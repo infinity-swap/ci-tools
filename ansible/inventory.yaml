@@ -1,0 +1,8 @@
+all:
+  hosts:
+    35.188.160.53:
+    35.192.168.238:
+  vars:
+    directory: "/var/dfx-server"
+    ansible_user: root
+    ansible_python_interpreter: /usr/bin/python3

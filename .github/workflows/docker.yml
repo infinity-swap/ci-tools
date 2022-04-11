@@ -29,21 +29,22 @@ jobs:
           username: _json_key
           password: ${{ secrets.GCP_DOCKER_KEY }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: user/app:latest
-
       - name: Build & push CI image
         uses: docker/build-push-action@v2
         with:
-          context: ./dfx-server/
+          secrets: GIT_AUTH_TOKEN=${{ secrets.PAT_TOKEN }}
+          context: "{{defaultContext}}:dfx-server"
+          # build-contexts: |
+          #   project=./dfx-server
           tags: dfx-server/dfx-containers/ci:latest
-          file: ./dfx-server/Dockerfile.ci
+          file: ./Dockerfile.ci
 
       - name: Build & push slim image
         uses: docker/build-push-action@v2
         with:
+          secrets: GIT_AUTH_TOKEN=${{ secrets.PAT_TOKEN }}
+          context: "{{defaultContext}}:dfx-server"
+          # build-contexts: |
+          #   project=./dfx-server
           tags: dfx-server/dfx-containers/slim:latest
-          file: ./dfx-server/Dockerfile.slim
+          file: ./Dockerfile.slim

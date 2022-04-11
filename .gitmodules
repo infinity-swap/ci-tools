@@ -1,3 +1,4 @@
-[submodule "dfx-server/identity"]
-	path = dfx-server/identity
-	url = git@github.com:infinity-swap/identity.git
+# [submodule "dfx-server/identity"]
+# 	path = dfx-server/identity
+# 	url = git@github.com:infinity-swap/identity.git
+

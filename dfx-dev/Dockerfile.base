@@ -11,10 +11,11 @@ python3 pipenv
 
 RUN apt-get clean
 
+# In a case if you would require some python packages
 RUN python3 -m pip install --upgrade pip
 
+# Configure user to run next builds
 ENV USERDIR=/home/infinity
-
 RUN useradd -rm -d $USERDIR -s /bin/bash -g root -G sudo -u 1001 infinity
 
 USER infinity
@@ -39,10 +40,6 @@ ENV DFX_DEV_IDENTITY=${DFX_DEV_IDENTITY}
 RUN curl -fsSL https://github.com/dfinity/motoko/releases/download/${motoko_version}/motoko-linux64-${motoko_version}.tar.gz | tar -xz -C $USERDIR/bin && chmod +x $USERDIR/bin/moc
 
 RUN DEBIAN_FRONTEND=noninteractive DFX_VERSION=${dfx_version_now} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-# RUN DFX_VERSION=${dfx_version_latest} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-# RUN /bin/bash "versions=($dfx_versions) for v in \"\${versions[@]}\"; do dfx toolchain install \$v ; done"
 RUN dfx toolchain install $dfx_version_prev
 
 RUN ~/bin/dfx identity new $DFX_DEV_IDENTITY
-
-# RUN echo $USERDIR

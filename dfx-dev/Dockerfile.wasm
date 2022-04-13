@@ -1,5 +1,5 @@
-FROM dfx-server/dfx-containers/dfx-dev-base:latest as ic_builder
-ARG IC_BUILD_BRANCH=rebased-2022-02-17
+FROM ghcr.io/infinity-swap/dfx-dev-base:latest as ic_builder
+ARG IC_BUILD_BRANCH=rebased-2022-02-17 
 # Just a hack to use it in next ENV instructions
 ARG USERDIR=$USERDIR
 
@@ -30,13 +30,15 @@ RUN mv ${IC_RS_WD}/target/release/ic-nns-init ./bin
 RUN cd ic/gitlab-ci/tools && RUST_BACKTRACE=full ./cargo-build-canisters ${ARTIFACTS_DIR}
 RUN cd ${ARTIFACTS_DIR} && find *.gz | xargs -I {} gzip -df {}
 RUN mv ${ARTIFACTS_DIR}/*.wasm ./wasm && ls ${ARTIFACTS_DIR}
+RUN mv ~/wasm/lifeline.wasm ~/lifeline.wasm.moved
 
 
-FROM dfx-server/dfx-containers/dfx-dev-base:latest
+FROM ghcr.io/infinity-swap/dfx-dev-base:latest
 # Just a hack to use it in next ENV instructions
 ARG USERDIR=$USERDIR
 
 ENV CANISTERS_WASM_DIR=${USERDIR}/wasm
 
-COPY --from=ic_builder $CANISTERS_WASM_DIR .
-COPY --from=ic_builder $USERDIR/bin .
+COPY --from=ic_builder --chown=infinity:root $CANISTERS_WASM_DIR wasm 
+COPY --from=ic_builder --chown=infinity:root $USERDIR/bin bin
+

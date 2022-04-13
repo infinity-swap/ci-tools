@@ -1,4 +1,4 @@
-name: Build and push containers
+name: Build and push from dfx-server
 
 on:
   push:
@@ -12,12 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-
-      # - name: Checkout repository and submodules
-      #   uses: actions/checkout@v3
-      #   with:
-      #     submodules: recursive
-      #     token: ${{ secrets.PAT_TOKEN }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -38,9 +32,7 @@ jobs:
           push: true
           secrets: GIT_AUTH_TOKEN=${{ secrets.PAT_TOKEN }}
           context: "{{defaultContext}}:dfx-server"
-          # build-contexts: |
-          #   project=./dfx-server
-          tags: dfx-server/dfx-containers/ci:latest
+          tags: us-central1-docker.pkg.dev/dfx-server/dfx-containers/ci:latest
           file: ./Dockerfile.ci
 
       - name: Build & push slim image
@@ -49,7 +41,5 @@ jobs:
           push: true
           secrets: GIT_AUTH_TOKEN=${{ secrets.PAT_TOKEN }}
           context: "{{defaultContext}}:dfx-server"
-          # build-contexts: |
-          #   project=./dfx-server
-          tags: dfx-server/dfx-containers/slim:latest
+          tags: us-central1-docker.pkg.dev/dfx-server/dfx-containers/slim:latest
           file: ./Dockerfile.slim

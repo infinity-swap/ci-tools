@@ -1,4 +1,4 @@
-FROM dfx-env/base:latest as ic_builder
+FROM dfx-server/dfx-containers/dfx-dev-base:latest as ic_builder
 ARG IC_BUILD_BRANCH=rebased-2022-02-17
 # Just a hack to use it in next ENV instructions
 ARG USERDIR=$USERDIR
@@ -32,7 +32,7 @@ RUN cd ${ARTIFACTS_DIR} && find *.gz | xargs -I {} gzip -df {}
 RUN mv ${ARTIFACTS_DIR}/*.wasm ./wasm && ls ${ARTIFACTS_DIR}
 
 
-FROM dfx-env/base:latest
+FROM dfx-server/dfx-containers/dfx-dev-base:latest
 # Just a hack to use it in next ENV instructions
 ARG USERDIR=$USERDIR
 

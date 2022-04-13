@@ -5,7 +5,7 @@ on:
     branches: 
       - main
     paths:
-      - dfx-dev/**
+      - 'dfx-dev/**'
 
 jobs:
   dfx-dev:
@@ -40,7 +40,7 @@ jobs:
           context: "{{defaultContext}}:dfx-dev"
           # build-contexts: |
           #   project=./dfx-server
-          tags: dfx-dev/base:latest
+          tags: dfx-server/dfx-containers/dfx-dev-base:latest
           file: ./Dockerfile.base
 
       - name: Building Dfinity nns tool and canisters wasms
@@ -51,5 +51,5 @@ jobs:
           context: "{{defaultContext}}:dfx-dev"
           # build-contexts: |
           #   project=./dfx-server
-          tags: dfx-dev/full:latest
+          tags: dfx-server/dfx-containers/dfx-dev-full:latest
           file: ./Dockerfile.wasm

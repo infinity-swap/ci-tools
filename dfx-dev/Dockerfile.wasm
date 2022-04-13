@@ -1,0 +1,42 @@
+FROM dfx-env/base:latest as ic_builder
+ARG IC_BUILD_BRANCH=rebased-2022-02-17
+# Just a hack to use it in next ENV instructions
+ARG USERDIR=$USERDIR
+
+USER infinity
+WORKDIR $USERDIR
+RUN echo "WORKDIR is $USERDIR"
+
+RUN mkdir -p wasm candid
+
+ENV ARTIFACTS_DIR=${USERDIR}/ic/artifacts
+ENV CARGO_TARGET_DIR=${USERDIR}/ic/rs/target
+ENV IC_RS_WD=${USERDIR}/ic/rs
+
+# Note we are using InfinitySwap fork instead original repo  https://github.com/dfinity/ic.git
+RUN git clone --depth 1 https://github.com/infinity-swap/ic.git --branch=${IC_BUILD_BRANCH} ic
+
+# Apply patches (Not required for now)
+# COPY ic-patches patches
+# RUN git config --global user.email "ci@infinityswap.one" && git config --global user.name "CI"
+# RUN cd ic && ls ../patches | xargs -I {} git am ../patches/{}
+
+# Build NNS
+RUN cd ${IC_RS_WD} && RUST_BACKTRACE=full cargo build --release --bin ic-nns-init
+RUN ls ${IC_RS_WD}/target/release
+RUN mv ${IC_RS_WD}/target/release/ic-nns-init ./bin
+
+# Build artifacts
+RUN cd ic/gitlab-ci/tools && RUST_BACKTRACE=full ./cargo-build-canisters ${ARTIFACTS_DIR}
+RUN cd ${ARTIFACTS_DIR} && find *.gz | xargs -I {} gzip -df {}
+RUN mv ${ARTIFACTS_DIR}/*.wasm ./wasm && ls ${ARTIFACTS_DIR}
+
+
+FROM dfx-env/base:latest
+# Just a hack to use it in next ENV instructions
+ARG USERDIR=$USERDIR
+
+ENV CANISTERS_WASM_DIR=${USERDIR}/wasm
+
+COPY --from=ic_builder $CANISTERS_WASM_DIR .
+COPY --from=ic_builder $USERDIR/bin .

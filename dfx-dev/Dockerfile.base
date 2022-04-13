@@ -1,0 +1,48 @@
+FROM rust:1.60-slim-bullseye
+
+RUN apt-get update
+
+# Some of this dependencies are required to build Dfinity canisters
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+pkg-config curl git gzip tar pigz \
+build-essential cmake \
+libssl-dev clang liblmdb-dev \
+python3 pipenv
+
+RUN apt-get clean
+
+RUN python3 -m pip install --upgrade pip
+
+ENV USERDIR=/home/infinity
+
+RUN useradd -rm -d $USERDIR -s /bin/bash -g root -G sudo -u 1001 infinity
+
+USER infinity
+
+WORKDIR $USERDIR
+RUN mkdir -p bin
+ENV PATH=$PATH:$USERDIR/bin
+
+# Rust
+RUN cargo install ic-cdk-optimizer
+RUN rustup target add wasm32-unknown-unknown
+RUN rm -rf $CARGO_HOME/registry/cache/*
+
+# Dfinity SDK
+ARG motoko_version=0.6.25
+ARG dfx_version_now="0.9.3"
+ARG dfx_version_prev="0.8"
+ARG DFX_DEV_IDENTITY=ic_dev_identity
+ENV DFX_DEV_IDENTITY=${DFX_DEV_IDENTITY}
+
+# RUN curl -fsSL https://download.dfinity.systems/motoko/${motoko_version}/x86_64-linux/motoko-${motoko_version}.tar.gz | tar -xz -C /opt/bin && chmod +x /opt/bin/moc
+RUN curl -fsSL https://github.com/dfinity/motoko/releases/download/${motoko_version}/motoko-linux64-${motoko_version}.tar.gz | tar -xz -C $USERDIR/bin && chmod +x $USERDIR/bin/moc
+
+RUN DEBIAN_FRONTEND=noninteractive DFX_VERSION=${dfx_version_now} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+# RUN DFX_VERSION=${dfx_version_latest} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+# RUN /bin/bash "versions=($dfx_versions) for v in \"\${versions[@]}\"; do dfx toolchain install \$v ; done"
+RUN dfx toolchain install $dfx_version_prev
+
+RUN ~/bin/dfx identity new $DFX_DEV_IDENTITY
+
+# RUN echo $USERDIR

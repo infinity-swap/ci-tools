@@ -5,16 +5,16 @@ on:
     branches: [main]
 
 jobs:
-  docker:
+  dfx-server:
     runs-on: ubuntu-latest
     
     steps:
 
-      - name: Checkout repository and submodules
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          token: ${{ secrets.PAT_TOKEN }}
+      # - name: Checkout repository and submodules
+      #   uses: actions/checkout@v3
+      #   with:
+      #     submodules: recursive
+      #     token: ${{ secrets.PAT_TOKEN }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1

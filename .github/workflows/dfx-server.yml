@@ -5,7 +5,7 @@ on:
     branches: 
       - main
     paths:
-      - ./dfx-server/**
+      - 'dfx-server/**'
 
 jobs:
   dfx-server:

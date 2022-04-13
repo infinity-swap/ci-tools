@@ -2,7 +2,10 @@ name: Build and push containers
 
 on:
   push:
-    branches: [main]
+    branches: 
+      - main
+    paths:
+      -dfx-server/**
 
 jobs:
   dfx-server:
@@ -32,6 +35,7 @@ jobs:
       - name: Build & push CI image
         uses: docker/build-push-action@v2
         with:
+          push: true
           secrets: GIT_AUTH_TOKEN=${{ secrets.PAT_TOKEN }}
           context: "{{defaultContext}}:dfx-server"
           # build-contexts: |
@@ -42,6 +46,7 @@ jobs:
       - name: Build & push slim image
         uses: docker/build-push-action@v2
         with:
+          push: true
           secrets: GIT_AUTH_TOKEN=${{ secrets.PAT_TOKEN }}
           context: "{{defaultContext}}:dfx-server"
           # build-contexts: |

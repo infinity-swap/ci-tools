@@ -7,6 +7,9 @@ on:
     paths:
       - 'dfx-dev/**'
 
+env:
+  BUILD_TAG: r1.60-d0.9.3
+
 jobs:
   dfx-dev:
     runs-on: ubuntu-latest
@@ -41,7 +44,9 @@ jobs:
           context: "{{defaultContext}}:dfx-dev"
           tags: |
             ghcr.io/${{ github.repository_owner }}/dfx-dev-base:latest
+            ghcr.io/${{ github.repository_owner }}/dfx-dev-base:${{ env.BUILD_TAG }}
             us-central1-docker.pkg.dev/dfx-server/dfx-containers/dfx-dev-base:latest
+            us-central1-docker.pkg.dev/dfx-server/dfx-containers/dfx-dev-base:${{ env.BUILD_TAG }}
           file: ./Dockerfile.base
 
       - name: Building Dfinity nns tool and canisters wasms
@@ -50,9 +55,12 @@ jobs:
           push: true
           secrets: GIT_AUTH_TOKEN=${{ secrets.PAT_TOKEN }}
           context: "{{defaultContext}}:dfx-dev"
-          buildArgs: |
-            DEV_BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/dfx-dev-base:latest
+          build-args: |
+            IC_BUILD_BRANCH=rebased-2022-02-17-lifeline
+            DEV_BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/dfx-dev-base:${{ env.BUILD_TAG }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/dfx-dev-full:latest
+            ghcr.io/${{ github.repository_owner }}/dfx-dev-full:${{ env.BUILD_TAG }}
             us-central1-docker.pkg.dev/dfx-server/dfx-containers/dfx-dev-full:latest
+            us-central1-docker.pkg.dev/dfx-server/dfx-containers/dfx-dev-full:${{ env.BUILD_TAG }}
           file: ./Dockerfile.wasm

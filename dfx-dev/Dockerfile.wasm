@@ -3,17 +3,17 @@ ARG DEV_BASE_IMAGE=ghcr.io/infinity-swap/dfx-dev-base:latest
 FROM $DEV_BASE_IMAGE as ic_builder
 ARG IC_BUILD_BRANCH=rebased-2022-02-17 
 # Just a hack to use it in next ENV instructions
-ARG USERDIR=$USERDIR
+ARG WORK_DIR=$WORK_DIR
 
 USER infinity
-WORKDIR $USERDIR
-RUN echo "WORKDIR is $USERDIR"
+WORKDIR $WORK_DIR
+RUN echo "WORKDIR is $WORK_DIR"
 
 RUN mkdir -p wasm candid
 
-ENV ARTIFACTS_DIR=${USERDIR}/ic/artifacts
-ENV CARGO_TARGET_DIR=${USERDIR}/ic/rs/target
-ENV IC_RS_WD=${USERDIR}/ic/rs
+ENV ARTIFACTS_DIR=${WORK_DIR}/ic/artifacts
+ENV CARGO_TARGET_DIR=${WORK_DIR}/ic/rs/target
+ENV IC_RS_WD=${WORK_DIR}/ic/rs
 
 # Note we are using InfinitySwap fork instead original repo  https://github.com/dfinity/ic.git
 RUN git clone --depth 1 https://github.com/infinity-swap/ic.git --branch=${IC_BUILD_BRANCH} ic
@@ -37,9 +37,13 @@ RUN mv ~/wasm/lifeline.wasm ~/lifeline.wasm.moved
 
 FROM $DEV_BASE_IMAGE
 # Just a hack to use it in next ENV instructions
-ARG USERDIR=$USERDIR
+ARG WORK_DIR=$WORK_DIR
 
-ENV CANISTERS_WASM_DIR=${USERDIR}/wasm
+ENV CANISTERS_WASM_DIR=${WORK_DIR}/wasm
 
 COPY --from=ic_builder --chown=infinity:root $CANISTERS_WASM_DIR wasm 
-COPY --from=ic_builder --chown=infinity:root $USERDIR/bin bin
+COPY --from=ic_builder --chown=infinity:root $WORK_DIR/bin bin
+
+USER root
+RUN chmod -R 0777 wasm
+USER infinity

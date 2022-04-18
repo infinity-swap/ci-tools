@@ -50,6 +50,8 @@ jobs:
           push: true
           secrets: GIT_AUTH_TOKEN=${{ secrets.PAT_TOKEN }}
           context: "{{defaultContext}}:dfx-dev"
+          buildArgs: |
+            DEV_BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/dfx-dev-base:latest
           tags: |
             ghcr.io/${{ github.repository_owner }}/dfx-dev-full:latest
             us-central1-docker.pkg.dev/dfx-server/dfx-containers/dfx-dev-full:latest

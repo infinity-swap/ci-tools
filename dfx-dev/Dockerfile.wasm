@@ -44,6 +44,9 @@ ENV CANISTERS_WASM_DIR=${WORK_DIR}/wasm
 COPY --from=ic_builder --chown=infinity:root $CANISTERS_WASM_DIR wasm 
 COPY --from=ic_builder --chown=infinity:root $WORK_DIR/bin bin
 
+# Set permissions to be able to run it from any user
 USER root
+RUN chmod -R 0777 .cache
 RUN chmod -R 0777 wasm
+RUN chmod -R 0755 bin
 USER infinity

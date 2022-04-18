@@ -19,7 +19,7 @@ RUN python3 -m pip install --upgrade pip
 
 # Configure user to run next builds
 ENV WORK_DIR=/home/infinity
-RUN useradd -rm -d $WORK_DIR -s /bin/bash -g root -G sudo -u 1001 infinity
+RUN useradd -rm -d $WORK_DIR -s /bin/bash -g root -G sudo -u 1000 infinity
 
 USER infinity
 

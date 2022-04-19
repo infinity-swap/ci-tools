@@ -45,6 +45,14 @@ RUN curl -fsSL https://github.com/dfinity/motoko/releases/download/${motoko_vers
 RUN DFX_VERSION=${dfx_version} sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
 RUN ~/bin/dfx identity new $DFX_DEV_IDENTITY
+RUN ~/bin/dfx identity use $DFX_DEV_IDENTITY
 
 # Cleaning cache
 RUN rm -rf $CARGO_HOME/registry
+
+# Make it possible to run from any user
+USER root
+RUN chmod -R 0777 .cache
+RUN chmod -R 0777 .config
+RUN chmod -R 0755 bin
+USER infinity

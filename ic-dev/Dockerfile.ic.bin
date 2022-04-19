@@ -9,11 +9,9 @@ ARG IC_BUILD_BRANCH=rebased-2022-02-17
 # Just a hack to use it in next ENV instructions
 ARG WORK_DIR=$WORK_DIR
 
-USER infinity
 WORKDIR $WORK_DIR
-RUN echo "WORKDIR is $WORK_DIR"
 
-RUN mkdir -p wasm candid
+RUN mkdir -p wasm
 
 ENV ARTIFACTS_DIR=${WORK_DIR}/ic/artifacts
 ENV CARGO_TARGET_DIR=${WORK_DIR}/ic/rs/target
@@ -30,13 +28,12 @@ RUN git clone --depth 1 https://github.com/infinity-swap/ic.git --branch=${IC_BU
 # Build NNS
 RUN cd ${IC_RS_WD} && RUST_BACKTRACE=full cargo build --release --bin ic-nns-init
 RUN ls ${IC_RS_WD}/target/release
-RUN mv ${IC_RS_WD}/target/release/ic-nns-init ./bin
-
+RUN mv ${IC_RS_WD}/target/release/ic-nns-init /usr/local/bin
 # Build artifacts
 RUN cd ic/gitlab-ci/tools && RUST_BACKTRACE=full ./cargo-build-canisters ${ARTIFACTS_DIR}
 RUN cd ${ARTIFACTS_DIR} && find *.gz | xargs -I {} gzip -df {}
 RUN mv ${ARTIFACTS_DIR}/*.wasm ./wasm && ls ${ARTIFACTS_DIR}
-RUN mv ~/wasm/lifeline.wasm ~/lifeline.wasm.moved
+RUN mv ./wasm/lifeline.wasm ./lifeline.wasm.moved
 
 
 #
@@ -48,14 +45,13 @@ ARG WORK_DIR=$WORK_DIR
 
 ENV CANISTERS_WASM_DIR=${WORK_DIR}/wasm
 
-COPY --from=ic_builder --chown=infinity:root $CANISTERS_WASM_DIR wasm 
-COPY --from=ic_builder --chown=infinity:root $WORK_DIR/bin bin
+COPY --from=ic_builder --chown=root:root $CANISTERS_WASM_DIR wasm
+COPY --from=ic_builder --chown=root:root /usr/local/bin /usr/local/bin
 
 # Should change it in the future but for now it is ok
 RUN (cd $CANISTERS_WASM_DIR && curl -SsO https://storage.googleapis.com/dfx-server_ic/testnet/wasm/is20_token.wasm)
 
 # Set permissions to be able to run it from any user
-USER root
 RUN chmod -R 0777 wasm
-RUN chmod -R 0755 bin
-USER infinity
+RUN chmod -R 0755 /usr/local/bin
+

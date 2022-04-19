@@ -13,7 +13,6 @@ WORKDIR $WORK_DIR
 RUN mkdir -p wasm
 
 ENV ARTIFACTS_DIR=${WORK_DIR}/ic/artifacts
-# ENV CARGO_TARGET_DIR=${WORK_DIR}/ic/rs/target
 ENV IC_RS_WD=${WORK_DIR}/ic/rs
 
 RUN mkdir /ic
@@ -28,6 +27,7 @@ RUN ls ${IC_RS_WD}/target/release
 RUN mv ${IC_RS_WD}/target/release/ic-nns-init /ic
 
 # Build artifacts
+ENV CARGO_TARGET_DIR=${WORK_DIR}/ic/rs/target
 RUN cd ic/gitlab-ci/tools && RUST_BACKTRACE=full ./cargo-build-canisters ${ARTIFACTS_DIR}
 RUN cd ${ARTIFACTS_DIR} && find *.gz | xargs -I {} gzip -df {}
 RUN mv ${ARTIFACTS_DIR}/*.wasm /ic/wasm && ls -la /ic/wasm

@@ -1,10 +1,9 @@
-ARG DEV_BASE_IMAGE=ghcr.io/infinity-swap/dfx-dev-base:latest
+# Build binaries: ic-nss-init and wasms for IC environment
+# Publish it in empty docker container for future reusage
+ARG BASE_IMAGE=ghcr.io/infinity-swap/ic-dev-base:latest
 
-#
-# Wasms build stage.
-# Other temporary data would not be saved in the result image
-#
-FROM $DEV_BASE_IMAGE as ic_builder
+
+FROM $BASE_IMAGE as ic_builder
 ARG IC_BUILD_BRANCH=rebased-2022-02-17 
 # Just a hack to use it in next ENV instructions
 ARG WORK_DIR=$WORK_DIR
@@ -14,44 +13,30 @@ WORKDIR $WORK_DIR
 RUN mkdir -p wasm
 
 ENV ARTIFACTS_DIR=${WORK_DIR}/ic/artifacts
-ENV CARGO_TARGET_DIR=${WORK_DIR}/ic/rs/target
+# ENV CARGO_TARGET_DIR=${WORK_DIR}/ic/rs/target
 ENV IC_RS_WD=${WORK_DIR}/ic/rs
+
+RUN mkdir /ic
+RUN mkdir /ic/wasm
 
 # Note we are using InfinitySwap fork instead original repo  https://github.com/dfinity/ic.git
 RUN git clone --depth 1 https://github.com/infinity-swap/ic.git --branch=${IC_BUILD_BRANCH} ic
 
-# Apply patches (Not required for now)
-# COPY ic-patches patches
-# RUN git config --global user.email "ci@infinityswap.one" && git config --global user.name "CI"
-# RUN cd ic && ls ../patches | xargs -I {} git am ../patches/{}
-
 # Build NNS
 RUN cd ${IC_RS_WD} && RUST_BACKTRACE=full cargo build --release --bin ic-nns-init
 RUN ls ${IC_RS_WD}/target/release
-RUN mv ${IC_RS_WD}/target/release/ic-nns-init /usr/local/bin
+RUN mv ${IC_RS_WD}/target/release/ic-nns-init /ic
+
 # Build artifacts
 RUN cd ic/gitlab-ci/tools && RUST_BACKTRACE=full ./cargo-build-canisters ${ARTIFACTS_DIR}
 RUN cd ${ARTIFACTS_DIR} && find *.gz | xargs -I {} gzip -df {}
-RUN mv ${ARTIFACTS_DIR}/*.wasm ./wasm && ls ${ARTIFACTS_DIR}
-RUN mv ./wasm/lifeline.wasm ./lifeline.wasm.moved
+RUN mv ${ARTIFACTS_DIR}/*.wasm /ic/wasm && ls -la /ic/wasm
+
+# RUN cp -r ${WORK_DIR}/wasm /ic
+# RUN cp ${WORK_DIR}/ic-nns-init /ic
 
 
-#
-# Now we are assembling our result image
-#
-FROM $DEV_BASE_IMAGE
-# Just a hack to use it in next ENV instructions
-ARG WORK_DIR=$WORK_DIR
+# Now put files into scratch based image
+FROM scratch
 
-ENV CANISTERS_WASM_DIR=${WORK_DIR}/wasm
-
-COPY --from=ic_builder --chown=root:root $CANISTERS_WASM_DIR wasm
-COPY --from=ic_builder --chown=root:root /usr/local/bin /usr/local/bin
-
-# Should change it in the future but for now it is ok
-RUN (cd $CANISTERS_WASM_DIR && curl -SsO https://storage.googleapis.com/dfx-server_ic/testnet/wasm/is20_token.wasm)
-
-# Set permissions to be able to run it from any user
-RUN chmod -R 0777 wasm
-RUN chmod -R 0755 /usr/local/bin
-
+COPY --from=ic_builder /ic /ic

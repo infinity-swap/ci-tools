@@ -44,7 +44,7 @@ jobs:
           context: "{{defaultContext}}:ic-dev"
           build-args: |
             IC_BUILD_BRANCH=rebased-2022-02-17
-            DEV_BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/ic-dev-base:latest
+            BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/ic-dev-base:latest
           tags: |
             ghcr.io/${{ github.repository_owner }}/ic-bin:latest
             ghcr.io/${{ github.repository_owner }}/ic-bin:${{ env.BUILD_TAG }}

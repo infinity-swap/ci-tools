@@ -1,6 +1,8 @@
 name: ic_dev_full_image
 
 on:
+  workflow_dispatch:
+    # Just run it
   push:
     branches: 
       - main
@@ -11,6 +13,7 @@ on:
     workflows: [rust_dfx_base_image, ic_binaries]
     types:
       - completed
+
 
 env:
   BUILD_TAG: latest

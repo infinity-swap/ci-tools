@@ -1,6 +1,8 @@
 name: rust_dfx_base_image
 
 on:
+  workflow_dispatch:
+    # Just run it
   push:
     branches: 
       - main

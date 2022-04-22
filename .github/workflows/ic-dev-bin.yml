@@ -1,6 +1,8 @@
 name: ic_binaries
 
 on:
+  workflow_dispatch:
+    # Just run it
   push:
     branches: 
       - main

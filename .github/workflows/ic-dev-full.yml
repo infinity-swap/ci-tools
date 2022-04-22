@@ -7,6 +7,11 @@ on:
     paths:
       - 'ic-dev/Dockerfile.full'
 
+  workflow_run:
+    workflows: [rust_dfx_base_image, ic_binaries]
+    types:
+      - completed
+
 env:
   BUILD_TAG: latest
 

@@ -25,6 +25,7 @@ WORKDIR $WORK_DIR
 
 # Rust
 RUN cargo install ic-cdk-optimizer
+RUN rustup component add clippy rustfmt
 RUN rustup target add wasm32-unknown-unknown
 
 # Dfinity SDK

@@ -5,7 +5,7 @@ FROM $IC_BIN_IMAGE as ic_bin
 
 FROM $BASE_IMAGE
 ARG WORK_DIR=$WORK_DIR
-ENV CANISTERS_WASM_DIR=${WORK_DIR}/wasm
+ENV DFX_WASMS_DIR=${WORK_DIR}/wasm
 
 WORKDIR $WORK_DIR
 
@@ -13,11 +13,11 @@ WORKDIR $WORK_DIR
 COPY --from=ic_bin --chown=root:root /ic/wasm $WORK_DIR/wasm
 COPY --from=ic_bin --chown=root:root /ic/ic-nns-init /usr/local/bin/
 
-RUN (cd $CANISTERS_WASM_DIR && curl -SsO https://storage.googleapis.com/dfx-server_ic/testnet/wasm/is20_token.wasm)
+RUN (cd $DFX_WASMS_DIR && curl -SsO https://storage.googleapis.com/dfx-server_ic/testnet/wasm/is20_token.wasm)
 
 RUN chmod -R 0777 wasm
 RUN chmod -R 0755 /usr/local/bin
 
 RUN echo "Packed binaries" && ls -la /usr/local/bin
 
-RUN echo "Packed canisters" && ls -la $CANISTERS_WASM_DIR
+RUN echo "Packed canisters" && ls -la $DFX_WASMS_DIR

@@ -19,7 +19,7 @@ env:
   BUILD_TAG: latest
 
 jobs:
-  ic-binaries:
+  ic-full-image:
     runs-on: ubuntu-latest
     
     steps:

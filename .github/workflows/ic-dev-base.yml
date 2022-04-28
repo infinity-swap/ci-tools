@@ -47,6 +47,6 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/ic-dev-base:latest
             ghcr.io/${{ github.repository_owner }}/ic-dev-base:${{ env.BUILD_TAG }}
-            us-central1-docker.pkg.dev/dfx-server/dfx-containers/ic-dev-base:latest
-            us-central1-docker.pkg.dev/dfx-server/dfx-containers/ic-dev-base:${{ env.BUILD_TAG }}
+            us-central1-docker.pkg.dev/dfx-server/ci/ic-dev-base:latest
+            us-central1-docker.pkg.dev/dfx-server/ci/ic-dev-base:${{ env.BUILD_TAG }}
           file: ./Dockerfile.base

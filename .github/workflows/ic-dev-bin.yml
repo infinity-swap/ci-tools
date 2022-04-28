@@ -50,6 +50,6 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/ic-bin:latest
             ghcr.io/${{ github.repository_owner }}/ic-bin:${{ env.BUILD_TAG }}
-            us-central1-docker.pkg.dev/dfx-server/dfx-containers/ic-bin:latest
-            us-central1-docker.pkg.dev/dfx-server/dfx-containers/ic-bin:${{ env.BUILD_TAG }}
+            us-central1-docker.pkg.dev/dfx-server/ci/ic-bin:latest
+            us-central1-docker.pkg.dev/dfx-server/ci/ic-bin:${{ env.BUILD_TAG }}
           file: ./Dockerfile.ic.bin

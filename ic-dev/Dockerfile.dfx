@@ -22,3 +22,22 @@ RUN echo "Packed binaries" && ls -la /usr/local/bin
 
 RUN echo "Packed canisters" && ls -la $DFX_WASMS_DIR
 
+
+COPY dfx.json nns/setup.sh nns/initial-neurons.csv ${WORK_DIR}/
+RUN chmod -R 0777 setup.sh
+
+EXPOSE 8000
+
+USER root
+
+RUN ls
+
+ARG IC_URI="http://localhost:8000"
+
+RUN /bin/bash -c "export IC_URI=$IC_URI DFX_WASMS_DIR=wasm SCRIPT_DIR=.\
+ && dfx start --clean --background" && ./setup.sh
+
+RUN mkdir ${WORK_DIR}/candid
+
+#CMD dfx start --host 0.0.0.0:8000 --background 
+

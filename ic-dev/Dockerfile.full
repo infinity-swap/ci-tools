@@ -21,3 +21,4 @@ RUN chmod -R 0755 /usr/local/bin
 RUN echo "Packed binaries" && ls -la /usr/local/bin
 
 RUN echo "Packed canisters" && ls -la $DFX_WASMS_DIR
+

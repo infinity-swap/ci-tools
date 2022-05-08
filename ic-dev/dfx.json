@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        
+    },
+    "networks": {
+        "local": {
+            "bind": "0.0.0.0:8000",
+            "type": "ephemeral"
+        }
+    },
+    "version": 1
+}

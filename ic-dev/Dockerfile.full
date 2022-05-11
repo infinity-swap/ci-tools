@@ -5,16 +5,28 @@ FROM $IC_BIN_IMAGE as ic_bin
 
 FROM $BASE_IMAGE
 ARG WORK_DIR=$WORK_DIR
+
 ENV DFX_WASMS_DIR=${WORK_DIR}/wasm
+ENV DFX_NEURONS_DIR=${WORK_DIR}/neurons
 
 WORKDIR $WORK_DIR
-
 
 COPY --from=ic_bin --chown=root:root /ic/wasm $WORK_DIR/wasm
 COPY --from=ic_bin --chown=root:root /ic/ic-nns-init /usr/local/bin/
 
+# Should be removed from here later
 RUN (cd $DFX_WASMS_DIR && curl -SsO https://storage.googleapis.com/dfx-server_ic/testnet/wasm/is20_token.wasm)
 
+
+COPY neurons/* ${DFX_NEURONS_DIR}/
+COPY dfx.json ${WORK_DIR}
+COPY bin/* /usr/local/bin
+
+# Finishing stuff
+ENV IC_HOST=0.0.0.0:8000
+ENV IC_URI=http://localhost:8000
+
+# RUN chmod -R 0777 neurons
 RUN chmod -R 0777 wasm
 RUN chmod -R 0755 /usr/local/bin
 
@@ -22,3 +34,7 @@ RUN echo "Packed binaries" && ls -la /usr/local/bin
 
 RUN echo "Packed canisters" && ls -la $DFX_WASMS_DIR
 
+EXPOSE 8000
+
+# This is how we should run in in downstream images
+# CMD dfx start --host $IC_HOST

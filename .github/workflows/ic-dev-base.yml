@@ -35,18 +35,20 @@ jobs:
         uses: docker/login-action@v1 
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username:  ${{ secrets.GH_PKG_LOGIN }}
+          password:  ${{ secrets.GH_PKG_TOKEN }}
+
+      - name: Checkout template repo
+        uses: actions/checkout@v3
 
       - name: Building base Rust/DFX image
         uses: docker/build-push-action@v2
         with:
           push: true
-          secrets: GIT_AUTH_TOKEN=${{ secrets.PAT_TOKEN }}
-          context: "{{defaultContext}}:ic-dev"
+          context: ./ic-dev
           tags: |
             ghcr.io/${{ github.repository_owner }}/ic-dev-base:latest
             ghcr.io/${{ github.repository_owner }}/ic-dev-base:${{ env.BUILD_TAG }}
             us-central1-docker.pkg.dev/dfx-server/ci/ic-dev-base:latest
             us-central1-docker.pkg.dev/dfx-server/ci/ic-dev-base:${{ env.BUILD_TAG }}
-          file: ./Dockerfile.base
+          file: ./ic-dev/Dockerfile.base

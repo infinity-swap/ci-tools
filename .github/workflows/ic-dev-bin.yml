@@ -35,15 +35,14 @@ jobs:
         uses: docker/login-action@v1 
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username:  ${{ secrets.GH_PKG_LOGIN }}
+          password:  ${{ secrets.GH_PKG_TOKEN }}
 
       - name: Building Dfinity nns tool and canisters wasms
         uses: docker/build-push-action@v2
         with:
           push: true
-          secrets: GIT_AUTH_TOKEN=${{ secrets.PAT_TOKEN }}
-          context: "{{defaultContext}}:ic-dev"
+          context: ./ic-dev
           build-args: |
             IC_BUILD_BRANCH=rebased-2022-02-17
             BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/ic-dev-base:latest
@@ -52,4 +51,4 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/ic-bin:${{ env.BUILD_TAG }}
             us-central1-docker.pkg.dev/dfx-server/ci/ic-bin:latest
             us-central1-docker.pkg.dev/dfx-server/ci/ic-bin:${{ env.BUILD_TAG }}
-          file: ./Dockerfile.ic.bin
+          file: ./ic-dev/Dockerfile.ic.bin

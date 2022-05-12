@@ -1,7 +1,9 @@
 ARG BASE_IMAGE=ghcr.io/infinity-swap/ic-dev-base:latest
 ARG IC_BIN_IMAGE=ghcr.io/infinity-swap/ic-bin:latest
+ARG IFX_IMAGE=ghcr.io/infinity-swap/ifx-tool:latest
 
 FROM $IC_BIN_IMAGE as ic_bin
+FROM $IFX_IMAGE as ifx
 
 FROM $BASE_IMAGE
 ARG WORK_DIR=$WORK_DIR
@@ -13,6 +15,7 @@ WORKDIR $WORK_DIR
 
 COPY --from=ic_bin --chown=root:root /ic/wasm $WORK_DIR/wasm
 COPY --from=ic_bin --chown=root:root /ic/ic-nns-init /usr/local/bin/
+COPY --from=ifx --chown=root:root /wrapped/ifx /usr/local/bin/
 
 # Should be removed from here later
 RUN (cd $DFX_WASMS_DIR && curl -SsO https://storage.googleapis.com/dfx-server_ic/testnet/wasm/is20_token.wasm)

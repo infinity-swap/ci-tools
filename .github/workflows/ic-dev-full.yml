@@ -42,15 +42,18 @@ jobs:
         uses: docker/login-action@v1 
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username:  ${{ secrets.GH_PKG_LOGIN }}
+          password:  ${{ secrets.GH_PKG_TOKEN }}
 
-      - name: Building Dfinity nns tool and canisters wasms
+      - name: Checkout template repo
+        uses: actions/checkout@v3
+
+      - name: "Full image"
         uses: docker/build-push-action@v2
         with:
           push: true
-          secrets: GIT_AUTH_TOKEN=${{ secrets.PAT_TOKEN }}
-          context: "{{defaultContext}}:ic-dev"
+          # secrets: GIT_AUTH_TOKEN= ${{ secrets.GH_PKG_TOKEN }}
+          context: ./ic-dev
           build-args: |
             BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/ic-dev-base:latest
             IC_BIN_IMAGE=ghcr.io/${{ github.repository_owner }}/ic-bin:latest
@@ -59,4 +62,4 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/ic-dev-full:${{ env.BUILD_TAG }}
             us-central1-docker.pkg.dev/dfx-server/ci/ic-dev-full:latest
             us-central1-docker.pkg.dev/dfx-server/ci/ic-dev-full:${{ env.BUILD_TAG }}
-          file: ./Dockerfile.full
+          file: ./ic-dev/Dockerfile.full

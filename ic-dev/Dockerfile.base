@@ -10,7 +10,7 @@ RUN apt-get install -y \
 pkg-config curl git gzip tar pigz \
 build-essential cmake \
 libssl-dev clang liblmdb-dev \
-csvkit \
+csvkit jq \
 python3 pipenv
 
 RUN apt-get clean

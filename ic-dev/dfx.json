@@ -1,5 +1,10 @@
 {
     "canisters": {
+        "ledger-test": {
+            "type": "custom",
+            "wasm": "/workspace/wasm/ledger-canister-min",
+            "candid": "/workspace/candid/ledger-min.did"
+        }
     },
     "networks": {
         "local": {

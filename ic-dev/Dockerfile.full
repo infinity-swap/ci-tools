@@ -1,11 +1,9 @@
 ARG BASE_IMAGE=ghcr.io/infinity-swap/ic-dev-base:latest
 ARG IC_BIN_IMAGE=ghcr.io/infinity-swap/ic-bin:latest
 ARG IFX_IMAGE=ghcr.io/infinity-swap/ifx-tool:latest
-ARG IS20_IMAGE=ghcr.io/infinity-swap/is20-dev:latest
 
 FROM $IC_BIN_IMAGE as ic_bin
 FROM $IFX_IMAGE as ifx
-FROM $IS20_IMAGE as is20
 
 FROM $BASE_IMAGE
 ARG WORK_DIR=$WORK_DIR
@@ -33,11 +31,8 @@ COPY --from=ic_bin --chown=root:root /ic/ic-nns-init /usr/local/bin/
 
 COPY --from=ifx --chown=root:root /wrapped/ifx /usr/local/bin/
 
-COPY --from=is20 --chown=root:root /wrapped/*.wasm $WORK_DIR/wasm/
-COPY --from=is20 --chown=root:root /wrapped/*.did $WORK_DIR/candid/
-RUN dfx-config-canister.sh is20_token is20_token.wasm is20_token.did
-RUN dfx-config-canister.sh is20_factory is20_factory.wasm is20_factory.did
-
+RUN (cd $DFX_WASMS_DIR && curl -SsO https://storage.googleapis.com/dfx-server_ic/testnet/wasm/ledger-canister-min.wasm)
+RUN (cd $DFX_DID_DIR && curl -SsO https://storage.googleapis.com/dfx-server_ic/testnet/candid/ledger-min.did)
 
 # Finishing stuff
 # RUN chmod -R 0777 neurons
@@ -50,7 +45,8 @@ RUN echo "Packed binaries" && ls -la /usr/local/bin
 RUN echo "Packed modules" && ls -la $DFX_WASMS_DIR
 RUN echo "Packed candid" && ls -la $DFX_DID_DIR
 
+RUN dfx start --clean --background && nns-init.sh && dfx stop
+
 EXPOSE 8000
 
-# This is how we should run in in downstream images
-# CMD dfx start --host $IC_HOST
+CMD dfx start --host $IC_HOST

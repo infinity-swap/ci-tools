@@ -7,6 +7,8 @@ minter=$(dfx ledger account-id)
 
 echo -e "Deploying NNS: \nMINTER: $minter\nPRINCIPAL: $principal\n"
 
+# ic-nns-init can not accept multiple csv
+# assuming that we may have multiple csv in neurons folder
 csvstack $DFX_NEURONS_DIR/*.csv > ~/initial-neurons.csv
 
 # Limit execution time for this script
@@ -19,6 +21,9 @@ ic-nns-init --url $IC_URI \
 --initialize-ledger-with-test-accounts-for-principals $principal
 
 deploy_status=$?
+
+rm ~/initial-neurons.csv
+
 if [ $deploy_status -ne 0 ]; then 
     echo "ERROR! NNS deploy failed!";
     exit 1; 

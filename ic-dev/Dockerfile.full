@@ -34,6 +34,8 @@ COPY --from=ifx --chown=root:root /wrapped/ifx /usr/local/bin/
 RUN (cd $DFX_WASMS_DIR && curl -SsO https://storage.googleapis.com/dfx-server_ic/testnet/wasm/ledger-canister-min.wasm)
 RUN (cd $DFX_DID_DIR && curl -SsO https://storage.googleapis.com/dfx-server_ic/testnet/candid/ledger-min.did)
 
+# Reference CLI command to add something into dfx
+RUN J=$(jq ".canisters += {\"ledger-test\":{\"wasm\":\"$DFX_WASMS_DIR/ledger-canister-min.wasm\",\"candid\":\"$DFX_DID_DIR/ledger-min.did\",\"type\":\"custom\"}}" ./dfx.json) && echo "$J" > ./dfx.json
 # Finishing stuff
 # RUN chmod -R 0777 neurons
 RUN chmod -R 0777 $DFX_WASMS_DIR

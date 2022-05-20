@@ -49,6 +49,11 @@ RUN echo "Packed candid" && ls -la $DFX_DID_DIR
 
 RUN dfx start --clean --background && nns-init.sh && dfx stop
 
+# All workspace should be accessible for any user
+RUN chmod -R 0777 ./
+# But we can not do it for DFX directory because it
+RUN chmod -R 0770 .dfx
+
 EXPOSE 8000
 
 CMD dfx start --host $IC_HOST

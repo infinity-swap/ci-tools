@@ -6,6 +6,8 @@ on:
   pull_request:
     branches:
       - 'main'
+    paths:
+      - './Dockerfile.rust'
   push:
     branches: 
       - main

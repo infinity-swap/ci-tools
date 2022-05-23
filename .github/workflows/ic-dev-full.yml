@@ -10,6 +10,8 @@ on:
   pull_request:
     branches:
       - 'main'
+    paths:
+      - 'ic-dev/Dockerfile.full'
   push:
     branches: 
       - main
@@ -46,7 +48,7 @@ jobs:
           username:  ${{ secrets.GH_PKG_LOGIN }}
           password:  ${{ secrets.GH_PKG_TOKEN }}
 
-      - name: Checkout template repo
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: "Full image"

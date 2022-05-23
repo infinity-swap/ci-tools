@@ -2,7 +2,6 @@
 # Publish it in empty docker container for future reusage
 ARG BASE_IMAGE=ghcr.io/infinity-swap/ic-dev-base:latest
 
-
 FROM $BASE_IMAGE as ic_builder
 ARG IC_BUILD_BRANCH=rebased-2022-02-17 
 # Just a hack to use it in next ENV instructions
@@ -31,10 +30,6 @@ ENV CARGO_TARGET_DIR=${WORK_DIR}/ic/rs/target
 RUN cd ic/gitlab-ci/tools && RUST_BACKTRACE=full ./cargo-build-canisters ${ARTIFACTS_DIR}
 RUN cd ${ARTIFACTS_DIR} && find *.gz | xargs -I {} gzip -df {}
 RUN mv ${ARTIFACTS_DIR}/*.wasm /ic/wasm && ls -la /ic/wasm
-
-# RUN cp -r ${WORK_DIR}/wasm /ic
-# RUN cp ${WORK_DIR}/ic-nns-init /ic
-
 
 # Now put files into scratch based image
 FROM scratch

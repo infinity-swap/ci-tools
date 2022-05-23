@@ -3,6 +3,13 @@ name: rust_dfx_base_image
 on:
   workflow_dispatch:
     # Just run it
+  workflow_run:
+    workflows: [rust_image]
+    types:
+      - completed
+  pull_request:
+    branches:
+      - 'main'
   push:
     branches: 
       - main
@@ -44,7 +51,7 @@ jobs:
       - name: Building base Rust/DFX image
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
           context: ./ic-dev
           tags: |
             ghcr.io/${{ github.repository_owner }}/ic-dev-base:latest

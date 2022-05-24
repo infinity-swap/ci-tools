@@ -91,7 +91,6 @@ RUN mkdir $DFX_WASMS_DIR && \
 COPY neurons/* ${DFX_NEURONS_DIR}/
 COPY dfx.json ${WORK_DIR}
 COPY bin/* /usr/local/bin/
-COPY entrypoint.sh /
 
 # Pack external binaries
 COPY --from=ic_bin --chown=root:root /ic/wasm $WORK_DIR/wasm

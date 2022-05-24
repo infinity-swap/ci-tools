@@ -13,10 +13,10 @@ on:
     paths:
       - 'ic-dev/Dockerfile.full'
   push:
-    branches: 
+    branches:
       - main
     paths:
-      - 'ic-dev/Dockerfile.full'
+      - "ic-dev/Dockerfile"
 
 env:
   BUILD_TAG: latest
@@ -25,28 +25,27 @@ jobs:
   ic-full-image:
     if: ${{ ! github.event.workflow_run || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    
-    steps:
 
+    steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-      
+
       - name: Login to GCP Registry
-        uses: docker/login-action@v1 
+        uses: docker/login-action@v1
         with:
           registry: us-central1-docker.pkg.dev
           username: _json_key
           password: ${{ secrets.GCP_DOCKER_KEY }}
 
       - name: Login to Github Registry
-        uses: docker/login-action@v1 
+        uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username:  ${{ secrets.GH_PKG_LOGIN }}
-          password:  ${{ secrets.GH_PKG_TOKEN }}
+          username: ${{ secrets.GH_PKG_LOGIN }}
+          password: ${{ secrets.GH_PKG_TOKEN }}
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -64,4 +63,4 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/ic-dev-full:${{ env.BUILD_TAG }}
             us-central1-docker.pkg.dev/dfx-server/ci/ic-dev-full:latest
             us-central1-docker.pkg.dev/dfx-server/ci/ic-dev-full:${{ env.BUILD_TAG }}
-          file: ./ic-dev/Dockerfile.full
+          target: full

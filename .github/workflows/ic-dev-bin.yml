@@ -12,7 +12,7 @@ on:
     branches:
       - main
     paths:
-      - "ic-dev/Dockerfile"
+      - 'ic-dev/Dockerfile.ic.bin'
 
 env:
   BUILD_TAG: latest
@@ -58,4 +58,4 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/ic-bin:${{ env.BUILD_TAG }}
             us-central1-docker.pkg.dev/dfx-server/ci/ic-bin:latest
             us-central1-docker.pkg.dev/dfx-server/ci/ic-bin:${{ env.BUILD_TAG }}
-          target: ic_bin
+          file: 'ic-dev/Dockerfile.ic_bin' 

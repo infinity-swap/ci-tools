@@ -37,6 +37,9 @@ jobs:
           username: ${{ secrets.GH_PKG_LOGIN }}
           password: ${{ secrets.GH_PKG_TOKEN }}
 
+      - name: Checkout template repo
+        uses: actions/checkout@v3
+
       - name: Building Dfinity nns tool and canisters wasms
         uses: docker/build-push-action@v2
         with:

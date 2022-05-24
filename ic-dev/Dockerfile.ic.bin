@@ -32,10 +32,6 @@ RUN cd ic/gitlab-ci/tools && RUST_BACKTRACE=full ./cargo-build-canisters ${ARTIF
 RUN cd ${ARTIFACTS_DIR} && find *.gz | xargs -I {} gzip -df {}
 RUN mv ${ARTIFACTS_DIR}/*.wasm /ic/wasm && ls -la /ic/wasm
 
-# RUN cp -r ${WORK_DIR}/wasm /ic
-# RUN cp ${WORK_DIR}/ic-nns-init /ic
-
-
 # Now put files into scratch based image
 FROM scratch
 

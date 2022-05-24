@@ -3,17 +3,20 @@ name: ic_dev_full_image
 on:
   workflow_dispatch:
     # Just run it
+  workflow_run:
+    workflows: [rust_dfx_base_image, ic_binaries]
+    types:
+      - completed
+  pull_request:
+    branches:
+      - 'main'
+    paths:
+      - 'ic-dev/Dockerfile.full'
   push:
     branches: 
       - main
     paths:
       - 'ic-dev/Dockerfile.full'
-
-  workflow_run:
-    workflows: [rust_dfx_base_image, ic_binaries]
-    types:
-      - completed
-
 
 env:
   BUILD_TAG: latest
@@ -45,13 +48,13 @@ jobs:
           username:  ${{ secrets.GH_PKG_LOGIN }}
           password:  ${{ secrets.GH_PKG_TOKEN }}
 
-      - name: Checkout template repo
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: "Full image"
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
           context: ./ic-dev
           build-args: |
             BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/ic-dev-base:latest

@@ -1,0 +1,81 @@
+name: GCS Proxy
+
+on:
+  workflow_dispatch:
+    # Just run it
+  push:
+    branches:
+      - main
+      - 'CPROD-930'
+    # paths:
+    #   - "gcs-proxy/Dockerfile"
+
+jobs:
+  build-gcsproxy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # - name: "Installing glide"
+      #   run: |
+      #     curl https://glide.sh/get | sh
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '1.18'
+          check-latest: true
+          cache: true
+          go-version-file: gcs-proxy/gcsproxy/go.mod
+          cache-dependency-path: gcs-proxy/gcsproxy/go.sum
+      
+      - name: "Build"
+        run: |
+          cd gcs-proxy/gcsproxy
+          make build-cross
+          ls -l ./dist
+          mv ./dist/gcsproxy_0.3.0_amd64_linux ./dist/gcsproxy
+
+      - uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          retention-days: 1
+          name: gcsproxy-artifact
+          path: gcs-proxy/gcsproxy/dist/gcsproxy
+
+  docker-image:
+    # needs: [build-gcsproxy]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to GCP Registry
+        uses: docker/login-action@v1
+        with:
+          registry: us-central1-docker.pkg.dev
+          username: _json_key
+          password: ${{ secrets.GCP_DOCKER_KEY }}
+
+      - uses: actions/checkout@v3
+
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     name: gcsproxy-artifact
+      #     path: gcs-proxy/bin
+
+      - name: "GCS proxy image"
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          context: ./gcs-proxy
+          # build-args: |
+          #   BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/ic-dev-base:latest
+          #   IC_BIN_IMAGE=ghcr.io/${{ github.repository_owner }}/ic-bin:latest
+          tags: |
+            us-central1-docker.pkg.dev/dfx-server/ci/gcs-proxy:latest
+          # target: full

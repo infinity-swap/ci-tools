@@ -7,3 +7,5 @@ On the other hand Google provide IAP that could limit access to other services v
 IAP does not work with GCS buckets. 
 
 To server Oauth protected files from storage we could run IAP protected proxy service (instance) that would expose files from some private storage bucket.
+
+Proxy service origin is here https://github.com/daichirata/gcsproxy

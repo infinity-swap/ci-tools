@@ -6,11 +6,12 @@ on:
   push:
     branches:
       - main
+      - CPROD-961
     paths:
       - "ic-dev/Dockerfile"
 
 env:
-  BUILD_TAG: r1.60-d0.9.3
+  BUILD_TAG: r1.60-d0.10.x
 
 jobs:
   ic-dev-base-image:

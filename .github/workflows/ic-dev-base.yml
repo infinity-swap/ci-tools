@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - main
-      - CPROD-961
     paths:
       - "ic-dev/Dockerfile"
 

@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - "ic-dev/Dockerfile"
+      - "ic-dev-full/**"
 
   workflow_run:
     workflows: [rust_dfx_base_image, ic_binaries]

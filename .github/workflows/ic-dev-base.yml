@@ -7,10 +7,10 @@ on:
     branches:
       - main
     paths:
-      - "ic-dev/Dockerfile"
+      - "ic-dev-base/**"
 
 env:
-  BUILD_TAG: r1.60-d0.9.3
+  BUILD_TAG: r1.60-d0.11.0
 
 jobs:
   ic-dev-base-image:

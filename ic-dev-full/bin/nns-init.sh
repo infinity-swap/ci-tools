@@ -17,8 +17,8 @@ timeout 120 \
 ic-nns-init --url $IC_URI \
 --wasm-dir $DFX_WASMS_DIR \
 --initial-neurons ~/initial-neurons.csv \
---minter $minter \
 --initialize-ledger-with-test-accounts-for-principals $principal
+# --minter $minter \
 
 deploy_status=$?
 

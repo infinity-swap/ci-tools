@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - "ic-dev/Dockerfile"
+      - "ic-dev-bin/**"
 
 env:
   BUILD_TAG: latest

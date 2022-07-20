@@ -10,7 +10,7 @@ on:
       - "ic-dev/Dockerfile"
 
 env:
-  BUILD_TAG: r1.60-d0.10.x
+  BUILD_TAG: r1.60-d0.9
 
 jobs:
   ic-dev-base-image:

@@ -7,7 +7,7 @@ ENV HOME=/workspace
 WORKDIR $WORK_DIR
 # Dfinity SDK
 ARG motoko_version=0.6.29
-ARG dfx_version=0.10.1
+ARG dfx_version=0.9.3
 ARG DFX_DEV_IDENTITY=ic_dev_identity
 ARG DFX_DEV_ACCOUNT_IDENTITY=ic_dev_account
 
